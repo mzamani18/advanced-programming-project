@@ -201,3 +201,73 @@ char **Board::move_right(char **mat, char player)
         exit(1);
     }
 }
+bool Board::valid_wall(char **mat, char player, string move_like)
+{
+    if (move_like == "up" || move_like == "down")
+    {
+        int *arr = new int[2];
+        arr = find_player(player, mat);
+        if (arr[0] == 0 || arr[0] == 10)
+        {
+            return false;
+        }
+        else if (mat[arr[0] - 1][arr[1]] != '-' || mat[arr[0] + 1][arr[1]] != '-')
+        {
+            return false;
+        }
+    }
+    else if (move_like == "left" || move_like == "right")
+    {
+        int *arr = new int[2];
+        arr = find_player(player, mat);
+        if (arr[1] == 0 || arr[1] == 10)
+        {
+            return false;
+        }
+        else if (mat[arr[0]][arr[1] + 1] != '-' || mat[arr[0]][arr[1] - 1] != '-')
+        {
+            return false;
+        }
+    }
+    else
+    {
+        cerr << "this move not exist";
+        exit(1);
+    }
+    return true;
+}
+//wall
+char **Board::wall(char **mat, char player, string move_like)
+{
+    int *arr = new int[2];
+    arr = find_player(player, mat);
+    if (move_like == "up" || move_like == "down")
+    {
+        if (valid_wall(mat, player, move_like))
+        {
+            mat[arr[0] + 1][arr[1]] = 'w';
+            mat[arr[0] - 1][arr[1]] = 'w';
+            return mat;
+        }
+        else
+        {
+            cerr << "you cant put a wall in this section";
+            exit(1);
+        }
+    }
+    else
+    {
+        if (valid_wall(mat, player, move_like))
+        {
+            mat[arr[0]][arr[1] + 1] = 'w';
+            mat[arr[0]][arr[1] - 1] = 'w';
+            return mat;
+        }
+        else
+        {
+            cerr << "you cant put a wall in this section";
+            exit(1);
+        }
+    }
+    return mat;
+}

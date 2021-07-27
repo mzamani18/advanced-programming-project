@@ -19,4 +19,6 @@ public:
     char **move_down(char **mat, char player);
     char **move_left(char **mat, char player);
     char **move_right(char **mat, char player);
+    bool valid_wall(char **mat, char player, string move_like);
+    char **wall(char **mat, char player, string move_like);
 };
