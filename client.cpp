@@ -5,7 +5,7 @@ int main()
 {
     httplib::Client cli("http://cpp-httplib-server.yhirose.repl.co");
 
-    auto res = cli.Get("/hi");
+    auto res = cli.Get("/game");
 
     if (res)
     {
