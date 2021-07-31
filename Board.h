@@ -123,33 +123,47 @@ bool Board::valid_move(char **mat, char player, string move)
 {
     int *arr = new int[2];
     arr = find_player(player, mat);
-    if (move == "up")
+    string moves[4] = {"up", "down", "left", "right"};
+    bool valid_type_of_move = false;
+    for (int i = 0; i < 4; i++)
     {
-        if (arr[0] == 0)
-            return false;
-        else if (mat[arr[0] - 1][arr[1]] != '-')
-            return false;
+        if (move == moves[i])
+            valid_type_of_move = true;
     }
-    else if (move == "down")
+    if (valid_type_of_move)
     {
-        if (arr[0] == 10)
-            return false;
-        else if (mat[arr[0] + 1][arr[1]] != '-')
-            return false;
-    }
-    else if (move == "left")
-    {
-        if (arr[1] == 0)
-            return false;
-        else if (mat[arr[0]][arr[1] - 1] != '-')
-            return false;
+        if (move == "up")
+        {
+            if (arr[0] == 0)
+                return false;
+            else if (mat[arr[0] - 1][arr[1]] != '-')
+                return false;
+        }
+        else if (move == "down")
+        {
+            if (arr[0] == 10)
+                return false;
+            else if (mat[arr[0] + 1][arr[1]] != '-')
+                return false;
+        }
+        else if (move == "left")
+        {
+            if (arr[1] == 0)
+                return false;
+            else if (mat[arr[0]][arr[1] - 1] != '-')
+                return false;
+        }
+        else
+        {
+            if (arr[1] == 10)
+                return false;
+            else if (mat[arr[0]][arr[1] + 1] != '-')
+                return false;
+        }
     }
     else
     {
-        if (arr[1] == 10)
-            return false;
-        else if (mat[arr[0]][arr[1] + 1] != '-')
-            return false;
+        return false;
     }
     return true;
 }
@@ -302,7 +316,7 @@ bool Board::valid_wall(char **mat, char player, string move_like, int row, int c
         {
             return false;
         }
-        if (col == 0 || col == 10)
+        else if (col == 0 || col == 10)
         {
             return false;
         }
