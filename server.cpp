@@ -64,7 +64,7 @@ int main(void)
                            //cout << "the player: " << ii << "move is " << command << endl;
                            if (game.determine_winner(mat, ii, command))
                            {
-                             cout << " the Winner is:" << ii;
+                             cout << " the Winner is:" << ii << endl;
                              cout << "Game is end" << endl;
                              res.set_content("congragulation! you win!", "text/plain");
                              svr.stop();
@@ -95,6 +95,21 @@ int main(void)
                              sss += "A";
                              //cout << "sss:" << sss << endl;
                              res.set_content(sss, "text/plain");
+                           }
+                           else if (command == "map")
+                           {
+                             string str = "";
+                             for (int i = 0; i < 11; i++)
+                             {
+                               for (int j = 0; j < 11; j++)
+                               {
+                                 str += mat[i][j];
+                                 str += " ";
+                               }
+                               str += "\n";
+                               string str2 = str + "\nyour move done";
+                               res.set_content(str2, "text.plain");
+                             }
                            }
                            else if (include_a_str(command, "wall"))
                            {

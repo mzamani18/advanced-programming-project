@@ -35,6 +35,9 @@ int main()
                 //cout << ress->body << endl;
                 if (ss[0] == username[3])
                 {
+                    cout << "The Updated Board after your Competitor move:\n";
+                    auto res_of_map = cli.Post("/pl" /* username.c_str()*/, "map", "text/plain");
+                    cout << res_of_map->body << endl;
                     cout << "the player" << ss[0] << "is your turn" << endl;
                     string temp;
                     cin >> temp;
@@ -52,8 +55,6 @@ int main()
                 }
                 //cli.Post("/turn", "1a", "text_plain");
             }
-
-            //turn++;
             //start game();
         }
         else
