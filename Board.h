@@ -19,10 +19,10 @@ public:
     char **move_down(char **mat, char player);
     char **move_left(char **mat, char player);
     char **move_right(char **mat, char player);
-    bool valid_wall(char **mat, char player, string move_like);
-    char **wall(char **mat, char player, string move_like);
+    bool valid_wall(char **mat, char player, string move_like, int row, int col);
+    char **wall(char **mat, char player, string move_like, int row, int col);
+    bool determine_winner(char **mat, char player, string move);
 };
-
 Board::Board(int num_of_players)
 {
     this->num_of_players = num_of_players;
@@ -50,8 +50,7 @@ void Board::print_board(char **mat)
         {
             cout << mat[i][j] << ' ';
         }
-        if (i != 10)
-            cout << endl;
+        cout << endl;
     }
     return;
 }
@@ -128,14 +127,14 @@ bool Board::valid_move(char **mat, char player, string move)
     {
         if (arr[0] == 0)
             return false;
-        else if (mat[arr[0] + 1][arr[1]] != '-')
+        else if (mat[arr[0] - 1][arr[1]] != '-')
             return false;
     }
     else if (move == "down")
     {
         if (arr[0] == 10)
             return false;
-        else if (mat[arr[0] - 1][arr[1]] != '-')
+        else if (mat[arr[0] + 1][arr[1]] != '-')
             return false;
     }
     else if (move == "left")
@@ -145,7 +144,7 @@ bool Board::valid_move(char **mat, char player, string move)
         else if (mat[arr[0]][arr[1] - 1] != '-')
             return false;
     }
-    else //right
+    else
     {
         if (arr[1] == 10)
             return false;
@@ -154,27 +153,50 @@ bool Board::valid_move(char **mat, char player, string move)
     }
     return true;
 }
+bool Board::determine_winner(char **mat, char player, string move)
+{
+    int *arr = new int[2];
+    arr = find_player(player, mat);
+    if (move == "up")
+    {
+        if (mat[arr[0] - 1][arr[1]] == 'g')
+        {
+            return true;
+        }
+    }
+    else if (move == "down")
+    {
+        if (mat[arr[0] + 1][arr[1]] == 'g')
+        {
+            return true;
+        }
+    }
+    else if (move == "right")
+    {
+        if (mat[arr[0]][arr[1] + 1] == 'g')
+        {
+            return true;
+        }
+    }
+    else if (move == "left")
+    {
+        if (mat[arr[0]][arr[1] - 1] == 'g')
+        {
+            return true;
+        }
+    }
+    return false;
+}
 //up
 char **Board::move_up(char **mat, char player)
 {
-    if (valid_move(mat, player, "up"))
+    if (determine_winner(mat, player, "up"))
     {
-        int *arr = new int[2];
-        arr = find_player(player, mat);
-        mat[arr[0]][arr[1]] = '-';
-        mat[arr[0] + 1][arr[1]] = player;
+        cout << "the player: " << player << " is winner\n";
+        exit(0);
         return mat;
     }
-    else
-    {
-        cerr << "you cant do this.";
-        exit(1);
-    }
-}
-//down
-char **Board::move_down(char **mat, char player)
-{
-    if (valid_move(mat, player, "down"))
+    if (valid_move(mat, player, "up"))
     {
         int *arr = new int[2];
         arr = find_player(player, mat);
@@ -188,9 +210,38 @@ char **Board::move_down(char **mat, char player)
         exit(1);
     }
 }
+//down
+char **Board::move_down(char **mat, char player)
+{
+    if (determine_winner(mat, player, "down"))
+    {
+        cout << "the player: " << player << " is winner\n";
+        exit(0);
+        return mat;
+    }
+    if (valid_move(mat, player, "down"))
+    {
+        int *arr = new int[2];
+        arr = find_player(player, mat);
+        mat[arr[0]][arr[1]] = '-';
+        mat[arr[0] + 1][arr[1]] = player;
+        return mat;
+    }
+    else
+    {
+        cerr << "you cant do this.";
+        exit(1);
+    }
+}
 //left
 char **Board::move_left(char **mat, char player)
 {
+    if (determine_winner(mat, player, "left"))
+    {
+        cout << "the player: " << player << " is winner\n";
+        exit(0);
+        return mat;
+    }
     if (valid_move(mat, player, "left"))
     {
         int *arr = new int[2];
@@ -208,6 +259,12 @@ char **Board::move_left(char **mat, char player)
 //right
 char **Board::move_right(char **mat, char player)
 {
+    if (determine_winner(mat, player, "right"))
+    {
+        cout << "the player: " << player << " is winner\n";
+        exit(0);
+        return mat;
+    }
     if (valid_move(mat, player, "right"))
     {
         int *arr = new int[2];
@@ -222,30 +279,34 @@ char **Board::move_right(char **mat, char player)
         exit(1);
     }
 }
-bool Board::valid_wall(char **mat, char player, string move_like)
+bool Board::valid_wall(char **mat, char player, string move_like, int row, int col)
 {
     if (move_like == "up" || move_like == "down")
     {
-        int *arr = new int[2];
-        arr = find_player(player, mat);
-        if (arr[0] == 0 || arr[0] == 10)
+        if (mat[row][col] != '-')
         {
             return false;
         }
-        else if (mat[arr[0] - 1][arr[1]] != '-' || mat[arr[0] + 1][arr[1]] != '-')
+        else if (row == 0 || row == 10)
+        {
+            return false;
+        }
+        else if (mat[row - 1][col] != '-' || mat[row + 1][col] != '-')
         {
             return false;
         }
     }
     else if (move_like == "left" || move_like == "right")
     {
-        int *arr = new int[2];
-        arr = find_player(player, mat);
-        if (arr[1] == 0 || arr[1] == 10)
+        if (mat[row][col] != '-')
         {
             return false;
         }
-        else if (mat[arr[0]][arr[1] + 1] != '-' || mat[arr[0]][arr[1] - 1] != '-')
+        if (col == 0 || col == 10)
+        {
+            return false;
+        }
+        else if (mat[row][col - 1] != '-' || mat[row][col + 1] != '-')
         {
             return false;
         }
@@ -258,16 +319,15 @@ bool Board::valid_wall(char **mat, char player, string move_like)
     return true;
 }
 //wall
-char **Board::wall(char **mat, char player, string move_like)
+char **Board::wall(char **mat, char player, string move_like, int row, int col)
 {
-    int *arr = new int[2];
-    arr = find_player(player, mat);
     if (move_like == "up" || move_like == "down")
     {
-        if (valid_wall(mat, player, move_like))
+        if (valid_wall(mat, player, move_like, row, col))
         {
-            mat[arr[0] + 1][arr[1]] = 'w';
-            mat[arr[0] - 1][arr[1]] = 'w';
+            mat[row][col] = 'w';
+            mat[row + 1][col] = 'w';
+            mat[row - 1][col] = 'w';
             return mat;
         }
         else
@@ -278,10 +338,11 @@ char **Board::wall(char **mat, char player, string move_like)
     }
     else
     {
-        if (valid_wall(mat, player, move_like))
+        if (valid_wall(mat, player, move_like, row, col))
         {
-            mat[arr[0]][arr[1] + 1] = 'w';
-            mat[arr[0]][arr[1] - 1] = 'w';
+            mat[row][col] = 'w';
+            mat[row][col + 1] = 'w';
+            mat[row][col - 1] = 'w';
             return mat;
         }
         else

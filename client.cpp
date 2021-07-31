@@ -1,66 +1,38 @@
 #include <iostream>
-#include <httplib.h>
 #include <Board.h>
+#include <httplib.h>
+#include <string>
 
-string valid_move_array[4] = {"up", "down", "left", "right"};
-bool valid_move(string move)
-{
-    for (int i = 0; i < 4; i++)
-    {
-        if (move == valid_move_array[i])
-            return true;
-    }
-    cout << "your input is not valid , EROOR!\n";
-    return false;
-}
+using namespace std;
 
 int main()
 {
-    httplib::Client cli("127.0.0.1", 8080);
-    string temp = "up";
-    while (valid_move(temp))
+    httplib::Client cli("127.0.0.1", 8000);
+    if (auto res = cli.Get("/start"))
     {
-        cin >> temp;
-        auto res = cli.Post("/p1", temp + "......" + "p1", "text/plain");
-
-        if (res)
+        string username = res->body;
+        cout << res->body << endl;
+        string tmp = username.substr(39, 1);
+        int num_of_players = stoi(tmp);
+        username = username.substr(12, 4);
+        int turn = 0;
+        if (res->status == 200)
         {
-            cout << res->status << std::endl;
-            cout << res->body << std::endl;
+            //std::cout << res->body << std::endl;
+            //username = username.substr(0, 3) + to_string(turn % num_of_players + 1);
+            while (true)
+            {
+                string temp;
+                cin >> temp;
+                auto res = cli.Post("/pl" /* username.c_str()*/, temp, "text/plain");
+                cout << res->body << endl;
+            }
+            //turn++;
+            //start game();
+        }
+        else
+        {
+            cout << "Error" << endl;
         }
     }
-    while (valid_move(temp))
-    {
-        cin >> temp;
-        auto res = cli.Post("/p2", temp + ".........." + "p2", "text/plain");
-
-        if (res)
-        {
-            cout << res->status << std::endl;
-            cout << res->body << std::endl;
-        }
-    }
-    while (valid_move(temp))
-    {
-        cin >> temp;
-        auto res = cli.Post("/p3", temp + "......" + "p3", "text/plain");
-
-        if (res)
-        {
-            cout << res->status << std::endl;
-            cout << res->body << std::endl;
-        }
-    }
-    while (valid_move(temp))
-    {
-        cin >> temp;
-        auto res = cli.Post("/p4", temp + "......" + "p4", "text/plain");
-
-        if (res)
-        {
-            cout << res->status << std::endl;
-            cout << res->body << std::endl;
-        }
-    }
-    //cout << cli.Get("/stop")->body << endl;
 }
