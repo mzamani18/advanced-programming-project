@@ -16,14 +16,11 @@ int main()
         int num_of_players = stoi(tmp);
         username = username.substr(12, 4);
         cout << username << endl;
-        //int turn = 0;
-        string isMyTurn = username + "_turn";
         if (res->status == 200)
         {
             //std::cout << res->body << std::endl;
             //username = username.substr(0, 3) + to_string(turn % num_of_players + 1);
             string ss = "";
-            //auto res_res = cli.Post("/pl" /* username.c_str()*/, "next", "text/plain");
             ss = "1A";
             //cout << ss << endl;
             while (true)
@@ -36,26 +33,24 @@ int main()
                 if (ss[0] == username[3])
                 {
                     cout << "The Updated Board after your Competitor move:\n";
-                    auto res_of_map = cli.Post("/pl" /* username.c_str()*/, "map", "text/plain");
+                    auto res_of_map = cli.Post("/pl", "map", "text/plain");
                     cout << res_of_map->body << endl;
                     cout << "the player" << ss[0] << "is your turn" << endl;
                     string temp;
                     cin >> temp;
-                    auto res = cli.Post("/pl" /* username.c_str()*/, temp, "text/plain");
+                    auto res = cli.Post("/pl", temp, "text/plain");
                     cout << res->body << endl;
-                    //res->body.length() - 1
                     auto res_res = cli.Post("/pl" /* username.c_str()*/, "next", "text/plain");
                     ss = res_res->body;
                     //cout << ss << endl;
                 }
                 else
                 {
-                    auto res_res = cli.Post("/pl" /* username.c_str()*/, "now", "text/plain");
+                    auto res_res = cli.Post("/pl", "now", "text/plain");
                     ss = res_res->body;
                 }
                 //cli.Post("/turn", "1a", "text_plain");
             }
-            //start game();
         }
         else
         {

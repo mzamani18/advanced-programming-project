@@ -45,7 +45,7 @@ int main(void)
                               "text_plain");
               if (num_of_players == num_of_connections)
               {
-                //game section.
+                //starting the game!
                 Board game(num_of_players);
                 int n = 11;
                 static char **mat = new char *[n];
@@ -56,7 +56,7 @@ int main(void)
                 cout << "lets go...!" << endl;
                 static int turn = 0;
                 static int turn2 = 1;
-                svr.Post(/*id.c_str()*/ "/pl", [&](const httplib::Request &req, httplib::Response &res)
+                svr.Post("/pl", [&](const httplib::Request &req, httplib::Response &res)
                          {
                            string command = req.body;
                            string test = to_string(((turn2 - 1) % num_of_players) + 1);
@@ -114,7 +114,7 @@ int main(void)
                            else if (include_a_str(command, "wall"))
                            {
                              string rowandcol = seprate_numbers(req.body);
-                             cout << rowandcol << endl;
+                             //cout << rowandcol << endl;
                              int row = determine_row_and_col(rowandcol, "row");
                              int col = determine_row_and_col(rowandcol, "col");
                              string temp;
@@ -130,23 +130,22 @@ int main(void)
                              {
                                temp = command.substr(7);
                              }
-                             cout << row << " " << col << " " << temp << endl;
+                             //cout << row << " " << col << " " << temp << endl;
                              if (temp == "up" || temp == "down")
                              {
                                game.wall(mat, ii, temp, row, col);
                                game.print_board(mat);
-                               //turn++;
+                               cout << endl;
                              }
                              else if (temp == "right" || temp == "left")
                              {
                                game.wall(mat, ii, temp, row, col);
                                game.print_board(mat);
-                               //turn++;
+                               cout << endl;
                              }
                              else
                              {
                                res.set_content("it is a not valid move", "text/plain");
-                               ////turn++;
                              }
                              string str = "";
                              for (int i = 0; i < 11; i++)
@@ -167,25 +166,25 @@ int main(void)
                              {
                                game.move_up(mat, ii);
                                game.print_board(mat);
-                               //turn++;
+                               cout << endl;
                              }
                              else if (command == "down")
                              {
                                game.move_down(mat, ii);
                                game.print_board(mat);
-                               //turn++;
+                               cout << endl;
                              }
                              else if (command == "right")
                              {
                                game.move_right(mat, ii);
                                game.print_board(mat);
-                               //turn++;
+                               cout << endl;
                              }
                              else if (command == "left")
                              {
                                game.move_left(mat, ii);
                                game.print_board(mat);
-                               //turn++;
+                               cout << endl;
                              }
                              string str = "";
                              for (int i = 0; i < 11; i++)
@@ -200,46 +199,17 @@ int main(void)
                                res.set_content(str2, "text.plain");
                              }
                            }
-                           /*string str = "";
-                           for (int i = 0; i < 11; i++)
-                           {
-                             for (int j = 0; j < 11; j++)
-                             {
-                               str += mat[i][j];
-                               str += " ";
-                             }
-                             str += "\n";
-                           }*/
 
                            //turn = turn % num_of_players + 1;
                            //char turn2 = turn + 48;
                            /*cout << "turn:" << turn << endl;
                            cout << "turn2 " << turn2 << endl;*/
                            /*string str2 = str + "\nyour move done";
-                           //cout << str;
-
-                           res.set_content(str2, "text.plain");*/
-                           //cout << turn << endl;
+                           //cout << turn << endl;*/
                          });
               }
             }
-
-            //start the game;
           });
-
-  /*svr.Post("/turn", [&](const httplib::Request &req, httplib::Response &res)
-           {
-             static int i = 1;
-             char temp = req.body[0];
-             if (temp == '1')
-             {
-               i++;
-             }
-             char tmp = i + 48;
-             cout << "i: " << i << endl;
-             string test = temp + " turn";
-             res.set_content(test, "text_plain");
-           });*/
 
   svr.listen("127.0.0.1", 8000);
 }
